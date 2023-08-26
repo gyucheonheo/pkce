@@ -8,4 +8,5 @@ edition = "2021"
 [dependencies]
 ring = "0.16"
 rand = "0.8"
-base64 = "0.13"
+base64 = "0.21.3"
+clap = { version = "4.4.0", features = ["derive"] }
