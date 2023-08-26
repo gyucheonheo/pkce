@@ -14,19 +14,15 @@ fn main() {
     let args = Args::parse();
 
     let the_given_verifier = if args.verifier.is_empty() {
-        None
+        generate_random_code_verifier()
     } else {
-        Some(args.verifier)
+        args.verifier
     };
 
-    let code_verifier = match the_given_verifier {
-        None => generate_random_code_verifier(),
-        Some(the_verifier) => the_verifier,
-    };
 
-    let code_challenge = calculate_code_challenge(&code_verifier);
+    let code_challenge = calculate_code_challenge(&the_given_verifier);
 
-    println!("Code verifier: {}", code_verifier);
+    println!("Code verifier: {}", the_given_verifier);
     println!("Code challenge: {}", code_challenge);
 
 }
