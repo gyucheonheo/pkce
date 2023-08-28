@@ -22,8 +22,12 @@ fn main() {
 
     let code_challenge = calculate_code_challenge(&the_given_verifier);
 
-    println!("Code verifier: {}", the_given_verifier);
-    println!("Code challenge: {}", code_challenge);
+    let print_aligned = |key: &str, value: &str| {
+        println!("{:<15}: {}", key, value);
+    };
+
+    print_aligned("code_verifier", &the_given_verifier);
+    print_aligned("code_challenge",& code_challenge);
 
 }
 

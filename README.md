@@ -2,6 +2,11 @@
 
 Code challenge & code verifier generator
 
+## Install
+``` bash
+$>cargo install --path .
+```
+
 ## Usage
 
 ``` bash
