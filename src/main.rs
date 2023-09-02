@@ -10,6 +10,9 @@ struct Args {
 
     #[arg(short, long, default_value = "64")]
     length: usize,
+
+    #[arg(short, long, default_value = "")]
+    fpath: String,
 }
 
 fn main() {
@@ -18,12 +21,13 @@ fn main() {
 
     let the_given_verifier = if args.verifier.is_empty() {
         let verifier_length = args.length;
-        generate_random_code_verifier(verifier_length)
+        let charset = generate_charset_from_file(&args.fpath);
+        generate_random_code_verifier(verifier_length, charset)
     } else {
         args.verifier
     };
 
-    let code_challenge = calculate_code_challenge(&the_given_verifier );
+    let code_challenge = calculate_code_challenge(&the_given_verifier);
 
     let print_aligned = |key: &str, value: &str| {
         println!("{:<15}: {}", key, value);
@@ -34,13 +38,19 @@ fn main() {
 
 }
 
-fn generate_random_code_verifier(verifier_length: usize) -> String {
-    let mut rng = rand::thread_rng();
+fn generate_charset_from_file(file_path: &str) -> Vec<u8>{
     const CHARSET: &[u8] = b"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~";
+    let charset = std::fs::read_to_string(file_path).unwrap_or_else(|_| String::from_utf8_lossy(CHARSET).to_string());
+    charset.as_bytes().to_vec()
+}
+
+fn generate_random_code_verifier(verifier_length: usize, charset: Vec<u8>) -> String {
+    let charset_slice: &[u8] = charset.as_slice();
+    let mut rng = rand::thread_rng();
     (0..verifier_length)
     .map(|_| {
-        let idx = rng.gen_range(0..CHARSET.len());
-        CHARSET[idx] as char
+        let idx = rng.gen_range(0..charset_slice.len());
+        charset_slice[idx] as char
     })
     .collect()
 }
